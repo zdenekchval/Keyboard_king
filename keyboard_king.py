@@ -19,7 +19,7 @@ class App(tkinter.Tk):
         self.kolo = 1
         self.title(titulek)
         self.canvas = tkinter.Canvas(self, width=sirka, height=vyska, background="white")
-
+        self.obr = tkinter.PhotoImage(file="pozadi.png")
         self.canvas.bind("<Button-1>", self.ovladani_mysi)
         self.canvas.bind("s", self.stisknuti_klavesy)
         self.canvas.bind("d", self.stisknuti_klavesy)
@@ -27,7 +27,6 @@ class App(tkinter.Tk):
         self.canvas.bind("j", self.stisknuti_klavesy)
         self.canvas.bind("k", self.stisknuti_klavesy)
         self.canvas.bind("l", self.stisknuti_klavesy)
-
         self.titulni_strana()
 
         self.canvas.focus_set()
@@ -49,6 +48,7 @@ class App(tkinter.Tk):
 
     def titulni_strana(self):
         self.canvas.delete("all")
+        self.pozadi = self.canvas.create_image(250, 250, anchor='center', image=self.obr)
         self.tlacitko_zacatek_hry = tkinter.Button(self, text="Nová hra", command=self.hra)
         self.menu = tkinter.Menu(self)
         
@@ -67,8 +67,8 @@ class App(tkinter.Tk):
     
 
     def score_napis(self):
-        self.kolo_napis = self.canvas.create_text(62, 50, text=f"Kolo: {str(self.kolo)}/{str(self.pocet_kol)}", font=f"Arial 17", fill="red")
-        self.dobre = self.canvas.create_text(55, 100, text=f"Score: {str(self.score)}", font=f"Arial 17", fill="red")
+        self.kolo_napis = self.canvas.create_text(62, 50, text=f"Kolo: {str(self.kolo)}/{str(self.pocet_kol)}", font=f"Arial 17", fill="black")
+        self.dobre = self.canvas.create_text(55, 100, text=f"Score: {str(self.score)}", font=f"Arial 17", fill="black")
     
     def ovladani_mysi(self, event):
         print(event.x, event.y)
@@ -136,8 +136,8 @@ class App(tkinter.Tk):
             self.canvas.itemconfig(self.kolo_napis, text=f"Kolo: {str(self.kolo)}/{str(self.pocet_kol)}")
         if self.kolo == self.pocet_kol+1:
             self.canvas.delete("all")
-            self.napis_game_over = self.canvas.create_text(250, 250, text="GAME OVER", font=f"Arial 50", fill="red")
-            self.napis_dosazene_score = self.canvas.create_text(250, 300, text=f"Vaše score: {self.score}", font=f"Arial 25", fill="red")
+            self.napis_game_over = self.canvas.create_text(250, 250, text="GAME OVER", font=f"Arial 50", fill="black")
+            self.napis_dosazene_score = self.canvas.create_text(250, 300, text=f"Vaše score: {self.score}", font=f"Arial 25", fill="black")
             self.after(3000, self.reset_hra)
             self.running = False
     
