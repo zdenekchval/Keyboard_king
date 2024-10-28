@@ -35,14 +35,14 @@ class App(tkinter.Tk):
     def o_hre(self):
         o_hre_okno = tkinter.Toplevel(self)
         o_hre_okno.title("O hře")
-        o_hre_okno.geometry("300x200")
-        label = tkinter.Label(o_hre_okno, text="Verze: 1.0\nAutor: Vaše jméno", font=("Arial", 12))
+        o_hre_okno.geometry("500x500")
+        label = tkinter.Label(o_hre_okno, text="text", font=("Arial", 12))
         label.pack(pady=20)
 
     def napoveda(self):
         napoveda_okno = tkinter.Toplevel(self)
         napoveda_okno.title("Nápověda")
-        napoveda_okno.geometry("300x200")
+        napoveda_okno.geometry("500x500")
         text = ("text")
         label = tkinter.Label(napoveda_okno, text=text, font=("Arial", 12), wraplength=250)
         label.pack(pady=20)
