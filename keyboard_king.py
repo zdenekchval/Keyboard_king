@@ -130,7 +130,7 @@ class App(tkinter.Tk):
             self.vytvoreni_kruhu()
             print(self.rychlost)
             print(self.rychlost_prepinani_obdelniku)
-            self.rychlost = (1.3*self.rychlost)**(2/3)
+            self.rychlost = self.rychlost * (2 ** (1 / self.pocet_kol))
             self.rychlost_prepinani_obdelniku = round(2000/(self.rychlost))
             self.kolo += 1
             self.canvas.itemconfig(self.kolo_napis, text=f"Kolo: {str(self.kolo)}/{str(self.pocet_kol)}")
