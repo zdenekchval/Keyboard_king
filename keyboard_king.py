@@ -43,7 +43,7 @@ class App(tkinter.Tk):
         napoveda_okno.title("Nápověda")
         napoveda_okno.geometry("500x500")
         text = ("text")
-        label = tkinter.Label(napoveda_okno, text=Cílem hry je stisknout správnou klávesu odpovídající označenému obdélníku ve chvíli, kdy na něj dopadne červený kruh, a získat tak body. Ovládejte obdélníky pomocí kláves „s“, „d“, „f“ (pro levé obdélníky) a „j“, „k“, „l“ (pro pravé obdélníky). S každým kolem se rychlost padání kruhu zvyšuje; hra končí po 10 kolech a zobrazí vaše skóre, font=("Arial", 12), wraplength=250)
+        label = tkinter.Label(napoveda_okno, text="Cílem hry je stisknout správnou klávesu odpovídající označenému obdélníku ve chvíli, kdy na něj dopadne červený kruh, a získat tak body. Ovládejte obdélníky pomocí kláves „s“, „d“, „f“ (pro levé obdélníky) a „j“, „k“, „l“ (pro pravé obdélníky). S každým kolem se rychlost padání kruhu zvyšuje; hra končí po 10 kolech a zobrazí vaše skóre", font=("Arial", 12), wraplength=250)
         label.pack(pady=20)
 
     def titulni_strana(self):
