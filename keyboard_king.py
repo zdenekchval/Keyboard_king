@@ -35,7 +35,10 @@ class App(tkinter.Tk):
         o_hre_okno = tkinter.Toplevel(self)
         o_hre_okno.title("O hře")
         o_hre_okno.geometry("500x500")
-        label = tkinter.Label(o_hre_okno, text="text", font=("Arial", 12))
+        self.obr2 = tkinter.PhotoImage(file="n.png")
+        label = tkinter.Label(o_hre_okno, text="Odraž a chyť\nZdeněk Chval, Ondřej Buchar\nVersion 1.0.0", font=("Arial", 12))
+        self.canvas.delete("all")
+        self.avatar = self.canvas.create_image(250, 250, anchor='center', image=self.obr2)
         label.pack(pady=20)
 
     def napoveda(self):
