@@ -6,55 +6,68 @@ import random
 class App(tkinter.Tk):
     def __init__(self, titulek, sirka, vyska):
         super().__init__()
-        self.sirka = sirka
-        self.vyska = vyska
-        self.obdelnik_je_vybrany = False
-        self.running = True
-        self.rychlost = 1
-        self.rychlost_prepinani_obdelniku = 2000
-        self.sirka_obdelniku = 40
-        self.vyska_obdelniku = 20
-        self.pocet_kol = 10
-        self.score = 0
-        self.kolo = 1
-        self.title(titulek)
+        self.sirka = sirka  # šířka okna
+        self.vyska = vyska  # výška okna
+        self.obdelnik_je_vybrany = False  # Proměnná určující jestli je nějaký obdélník vybraný
+        self.running = True  # Proměnná určující jestli je hra spuštěná
+        self.rychlost = 1  # Počáteční rychlost padání kruhu
+        self.rychlost_prepinani_obdelniku = 2000  # Počáteční rychlost přepínání obdelníků
+        self.sirka_obdelniku = 40  # Šířka obdélníku
+        self.vyska_obdelniku = 20  # Výška obdélníku
+        self.pocet_kol = 10  # Počet kol
+        self.score = 0  # Scóre
+        self.kolo = 1  # Kolo
+        self.title(titulek)  # Titulek
         self.canvas = tkinter.Canvas(self, width=sirka, height=vyska, background="white")
-        self.obr = tkinter.PhotoImage(file="pozadi.png")
-        self.canvas.bind("<Button-1>", self.ovladani_mysi)
+        self.obr = tkinter.PhotoImage(file="pozadi.png")  # Obrázek na pozadí
+
+        # Ovládání
         self.canvas.bind("s", self.stisknuti_klavesy)
         self.canvas.bind("d", self.stisknuti_klavesy)
         self.canvas.bind("f", self.stisknuti_klavesy)
         self.canvas.bind("j", self.stisknuti_klavesy)
         self.canvas.bind("k", self.stisknuti_klavesy)
         self.canvas.bind("l", self.stisknuti_klavesy)
-        self.titulni_strana()
+
+        self.titulni_strana() # Zobrazení titulní strany
 
         self.canvas.focus_set()
 
     def o_hre(self):
+        """
+        Otevření okna "O hře" s obrázkem avatara charakterizujícího, jmény autorů a verzí hry
+        """
         o_hre_okno = tkinter.Toplevel(self)
         o_hre_okno.title("O hře")
         o_hre_okno.geometry("500x500")
-        label = tkinter.Label(o_hre_okno, text="text", font=("Arial", 12))
+        self.obr2 = tkinter.PhotoImage(file="avatar.png")
+        label = tkinter.Label(o_hre_okno, text="Zdeněk Chval, Ondřej Buchar\nVersion 1.0.0", font=("Arial", 12))
+        self.avatar = tkinter.Label(o_hre_okno, image=self.obr2)
+        self.avatar.pack()
         label.pack(pady=20)
 
     def napoveda(self):
+        """
+        Otevření okna "Nápověda" s popisem hry
+        """
         napoveda_okno = tkinter.Toplevel(self)
         napoveda_okno.title("Nápověda")
         napoveda_okno.geometry("500x500")
-        text = ("text")
-        label = tkinter.Label(napoveda_okno, text=text, font=("Arial", 12), wraplength=250)
+        label = tkinter.Label(napoveda_okno, text="Cílem hry je stisknout správnou klávesu odpovídající označenému obdélníku ve chvíli, kdy na něj dopadne červený kruh, a získat tak body. Ovládejte obdélníky pomocí kláves „s“, „d“, „f“ (pro levé obdélníky) a „j“, „k“, „l“ (pro pravé obdélníky). S každým kolem se rychlost padání kruhu zvyšuje; hra končí po 10 kolech a zobrazí vaše skóre", font=("Arial", 12), wraplength=250)
         label.pack(pady=20)
 
     def titulni_strana(self):
-        self.canvas.delete("all")
-        self.pozadi = self.canvas.create_image(250, 250, anchor='center', image=self.obr)
-        self.tlacitko_zacatek_hry = tkinter.Button(self, text="Nová hra", command=self.hra)
+        """
+        Titulní strana
+        """
+        self.canvas.delete("all")  # smazání všech objektů z plátna (nápis "GAME OVER" a score po skončení hry)
+        self.pozadi = self.canvas.create_image(250, 250, anchor='center', image=self.obr)  # pozadí
+        self.tlacitko_zacatek_hry = tkinter.Button(self, text="Nová hra", command=self.hra)  # tlačítko pro zahájení hry
+
+        # Menubar s rozbalovacím menu
         self.menu = tkinter.Menu(self)
-        
         self.menu = tkinter.Menu(self)
         self.config(menu=self.menu)
-
         file_menu = tkinter.Menu(self.menu, tearoff=0)
         file_menu.add_command(label="Nápověda", command=self.napoveda)
         file_menu.add_command(label="O hře", command=self.o_hre)
@@ -67,11 +80,11 @@ class App(tkinter.Tk):
     
 
     def score_napis(self):
+        """
+        Nápis score a aktuálního kola
+        """
         self.kolo_napis = self.canvas.create_text(62, 50, text=f"Kolo: {str(self.kolo)}/{str(self.pocet_kol)}", font=f"Arial 17", fill="black")
         self.dobre = self.canvas.create_text(55, 100, text=f"Score: {str(self.score)}", font=f"Arial 17", fill="black")
-    
-    def ovladani_mysi(self, event):
-        print(event.x, event.y)
 
     def stisknuti_klavesy(self, event):
         if not self.obdelnik_je_vybrany:
