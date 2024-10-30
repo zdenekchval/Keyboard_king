@@ -1,3 +1,5 @@
+# Zdeněk Chval, Ondřej Buchar
+# hra keyboard king
 
 import tkinter
 import random
@@ -10,6 +12,7 @@ class App(tkinter.Tk):
         self.vyska = vyska  # výška okna
         self.obdelnik_je_vybrany = False  # Proměnná určující jestli je nějaký obdélník vybraný
         self.running = True  # Proměnná určující jestli je hra spuštěná
+        self.zvoleny_obdelnik = ""  # Proměnná určující který obdélník je rozsvícený
         self.rychlost = 1  # Počáteční rychlost padání kruhu
         self.rychlost_prepinani_obdelniku = 2000  # Počáteční rychlost přepínání obdelníků
         self.sirka_obdelniku = 40  # Šířka obdélníku
@@ -87,21 +90,32 @@ class App(tkinter.Tk):
         self.dobre = self.canvas.create_text(55, 100, text=f"Score: {str(self.score)}", font=f"Arial 17", fill="black")
 
     def stisknuti_klavesy(self, event):
+        """
+        Zvolení příslušného obdélníku podle stisknuté klávesy
+        """
+        # Uživatel může zvolit obdélník jen jednou za kolo (od rozsvícení jednoho obdélníku do jeho zhasnutí)
         if not self.obdelnik_je_vybrany:
             self.obdelnik_je_vybrany = True
             if event.keysym in "sdfjkl":
                 index = "sdfjkl".index(event.keysym)
-                self.canvas.itemconfig(self.obdelniky[index], fill="black")
-                self.canvas.moveto(self.kruh, 40 + index * (self.sirka_obdelniku + 40), self.canvas.coords(self.kruh)[1])
+                self.canvas.itemconfig(self.obdelniky[index], fill="black")  # Změna barvy vybraného obdélníku
+                self.canvas.moveto(self.kruh, 40 + index * (self.sirka_obdelniku + 40), self.canvas.coords(self.kruh)[1])  # Přesun kruhu nad vybraný obdélník
+
+                # Pokud se zvolený obdélník shoduje s rozsvíceným obdélníkem score se zvýší o 1
                 if event.keysym == self.vybrany_obdelnik:
                     self.score += 1
                     self.canvas.itemconfig(self.dobre, text=(f"Score: {str(self.score)}"))
 
     def hra(self):
-        self.tlacitko_zacatek_hry.destroy()
-        self.menu.destroy()
-        self.score_napis()
-        self.obdelniky = []
+        """
+        Začátek hry po stisknutí tlačítka "Nová hra"
+        """
+        self.tlacitko_zacatek_hry.destroy()  # Skrytí tlačítka pro spuštění hry
+        self.menu.destroy()  # Skrytí menu 
+        self.score_napis()  # Zobrazení score a aktuálního kola
+        self.obdelniky = []  # List s obdélníků
+
+        # Vytvoření obdélníků
         for i in range(6):
             obdelnik = self.canvas.create_rectangle(
                 40 + i * (self.sirka_obdelniku + 40), 
@@ -111,50 +125,68 @@ class App(tkinter.Tk):
                 fill="white", 
                 outline="black"
             )
-            self.obdelniky.append(obdelnik)
-        self.zvoleny_obdelnik = self.obdelniky[0]
-        self.nahodny_vyber_obdelniku()
-        self.vytvoreni_kruhu()
+            self.obdelniky.append(obdelnik)  # Přidání obdélníku do listu
+        self.nahodny_vyber_obdelniku()  # nahodně rozsvítí jeden z obdélníků
+        self.vytvoreni_kruhu()  # vytvoření kruhu
         self.tik()
 
     def reset_barev(self):
+        """
+        Změna barvy všech obdélníků na bílou
+        """
         for obdelnik in self.obdelniky:
             self.canvas.itemconfig(obdelnik, fill="white")
-        self.running = True
 
     def nahodny_vyber_obdelniku(self):
+        """
+        Náhodně rozsvítí jeden obdélník
+        """
+        # resetování barev všech obdélníků na bílou
         self.obdelnik_je_vybrany = False
         self.reset_barev()
+
+        # zvolení náhodného obdélníku a změna jeho barvy na šedou
         obdelnik = random.choice("sdfjkl")
         self.vybrany_obdelnik = obdelnik
         index = "sdfjkl".index(obdelnik)
         self.canvas.itemconfig(self.obdelniky[index], fill="grey")
-        self.after(self.rychlost_prepinani_obdelniku, self.nahodny_vyber_obdelniku)
+
+        self.after(self.rychlost_prepinani_obdelniku, self.nahodny_vyber_obdelniku) # Rozsvícení jiného obdélníku po určité době
 
     def vytvoreni_kruhu(self):
-        
+        """
+        Vytvoření kruhu který indikuje jak dlouhé je každé kolo
+        """
         self.random_x1 = random.choice([40, 80+self.sirka_obdelniku, 120+2*self.sirka_obdelniku, 160+3*self.sirka_obdelniku, 200+4*self.sirka_obdelniku, 240+5*self.sirka_obdelniku,])
         self.kruh = self.canvas.create_oval(self.random_x1, 0, self.random_x1+self.sirka_obdelniku, self.sirka_obdelniku, fill="red", outline="red", tag = "kruh")
 
     def padani_kruhu(self):
+        """
+        Pohyb kruhu směrem dolů
+        """
         self.canvas.move(self.kruh, 0, self.rychlost)
+
+        # Když kruh "spadne dolů", číslo kola se zvýší o 1, zvýšíse rychlost přepínání obdélníků a rychlost padání kruhu a vytvoří se nový kruh v horní části okna
         if self.canvas.coords(self.kruh)[1] > self.vyska:
             self.canvas.delete("kruh")
             self.vytvoreni_kruhu()
-            print(self.rychlost)
-            print(self.rychlost_prepinani_obdelniku)
             self.rychlost = self.rychlost * (2 ** (1 / self.pocet_kol))
             self.rychlost_prepinani_obdelniku = round(2000/(self.rychlost))
             self.kolo += 1
             self.canvas.itemconfig(self.kolo_napis, text=f"Kolo: {str(self.kolo)}/{str(self.pocet_kol)}")
+
+        # Na konci posledního kola se zobrazí nápis "GAME OVER" a dosažené score
         if self.kolo == self.pocet_kol+1:
             self.canvas.delete("all")
             self.napis_game_over = self.canvas.create_text(250, 250, text="GAME OVER", font=f"Arial 50", fill="black")
             self.napis_dosazene_score = self.canvas.create_text(250, 300, text=f"Vaše score: {self.score}", font=f"Arial 25", fill="black")
-            self.after(3000, self.reset_hra)
+            self.after(3000, self.reset_hra)  # po 3 sekundách se zobrazí zpět úvodní obrazovka
             self.running = False
     
     def reset_hra(self):
+        """
+        Resetuje score, číslo kola, smaže vše z plátna a zobrazí úvodní stránku
+        """
         self.canvas.delete("all")
         self.score = 0
         self.kolo = 1
@@ -162,15 +194,21 @@ class App(tkinter.Tk):
 
 
     def tik(self):
+        """
+        Animace padání kruhu
+        """
         if self.running == True:
             self.padani_kruhu()
             self.after(10, self.tik)
 
     def run(self):
+        """
+        Spuštění aplikace
+        """
         self.mainloop()
 
 
-
+# Hlavní program
 if __name__ == "__main__":
-    app = App("keyboardking", 500, 500)
-    app.run()
+    app = App("keyboardking", 500, 500)  # Vytvoření instance aplikace
+    app.run()  # Spuštění aplikace
